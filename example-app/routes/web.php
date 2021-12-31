@@ -30,7 +30,6 @@ Route::get('/hello', function () {
 Route::get('/openapi_test', function () {
 
 
-
     $tokenAndStop= $_COOKIE["tokenAndShop"];
     parse_str($tokenAndStop, $tokenAndStop_arr);
     if (empty($tokenAndStop_arr['access_token'])){

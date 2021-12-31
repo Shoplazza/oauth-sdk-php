@@ -1,3 +1,5 @@
+[toc]
+
 # 项目介绍
 
 oauth2 package contains a client implementation for OAuth 2.0 spec.
@@ -108,10 +110,10 @@ $middleware = new Oauth2Middleware(
     "beECXaQzYZOvr5DgrSw3ntX4lfZOfoJwDtFMX2N0UOc",
     //设置$ClientSecret
     "Y9Mo9s4fzRxo23dvzFO8h1v5FX5pp3xYKAqGicDuG70",
+        //指定可选的请求权限。
+    array("read_product", "write_product"),
     //指定回调地址的连接
     "https://2fec-43-230-206-233.ngrok.io/oauth_sdk/redirect_uri/",
-    //指定可选的请求权限。
-    array("read_product", "write_product"),
     array(
         "AuthURL" => "/admin/oauth/authorize",
         "TokenURL" => "/admin/oauth/token",),
@@ -128,10 +130,13 @@ $middleware->OauthCallback();
 
 ## In Laravel
 
+[Laravel官方网站](https://laravel.com/) 
+
 目录下example-app 是一个Laravel 项目并且已经设置了全局的 middleware 会默认拦截 `/auth/shoplazza` 以及 `/auth/shoplazza/callback` 两个 URL 的请求:
 - `/auth/shoplazza?shop=xx.myshoplaza.com` : 请求此 URL 时，会重定向到 https://xx.myshoplaza.com/admin/oauth/authorize 去发起授权流程
 - `/auth/shoplazza/callback` : 拦截授权回调请求，自动将回调请求中的 code 替换 token
 
+关于
 
 ### 目录结构
 ```shell
@@ -245,26 +250,19 @@ class OauthDemo
         );
         switch ($request->path()){
             case  $middleware->callbackPath :
-                var_dump($request->path());
                 $tmp =$middleware->OauthCallback();
-                var_dump("打印状态");
 
-                var_dump(config('oauth.funcRewrite'));
 
 
                 if  (config('oauth.funcRewrite')) {
-                    var_dump("accessTokenHandlerFunc");
 
                     //进入下一步
                     $middleware->accessTokenHandlerFunc($tmp['shop'],$tmp['token']);
                     return $next($request);
                 }else{
-                    var_dump("走了");
-
                     return $next($request);
                 }
             case  $middleware->requestPath :
-                var_dump($request->path());
                 return redirect()->away($middleware->OauthRequest());
         }
         return $next($request);
@@ -321,7 +319,6 @@ Route::get('/openapi_test', function () {
         'Accept'=>'application/json',
 
         'Access-Token'=>$tokenAndStop_arr['access_token'],];
-    var_dump($tokenAndStop_arr['access_token'] );
     $req = $http->request("GET",'https://'.$tokenAndStop_arr['shop'].'/openapi/2020-07/shop',[
         'headers'=>[
             'Accept'=>'application/json',

@@ -10,16 +10,17 @@ define("DefaultDomain",     "myshoplaza.com");
 class Oauth2
 {
 
-    //应用id
+    //clientID
     public string $ClientID ;
+    //ClientSecret
     public string $ClientSecret;
-    //url
+    //RedirectURI
     public string $RedirectURI = "https://app.com/auth/shoplazza/callback";
-    //Scope指定可选的请求权限。
     public array $Endpoint =array(
     "AuthURL"=>"/admin/oauth/authorize",
     "TokenURL"=>"/admin/oauth/token",
     );
+    //Specify the scope of permissions required
     public array $Scopes;
     public string $Domain;
 
@@ -43,12 +44,12 @@ class Oauth2
         $this->Domain = $Domain;
     }
 
-    /**使用code换取token方法
+    /**Use the code for token method
      *
-     * @param string $shop 店铺的url
+     * @param string $shop   Store url
      * @param string $code
      * @param mixed ...$numbers
-     * @return array   返回token或者 是 错误信息
+     * @return array   
      */
     public  function Exchange(string $shop, string $code,...$numbers):array
     {
@@ -68,12 +69,12 @@ class Oauth2
     }
 
     /**
-    * token过期刷新token方法
+    * Token Expiration Refreshes the token method
     *
-    * @param string $shop 店铺的url
-    * @param string $token 需要刷新的token
+    * @param string $shop   Store url
+    * @param string $token  Overdue token
     * @param mixed ...$numbers
-    * @return token 返回token或者 是 错误信息
+    * @return token 
     */
     public  function RefreshToken(string $shop, string $token,...$numbers):array
     {
@@ -91,26 +92,24 @@ class Oauth2
     }
 
     /**
-     * token过期刷新token方法
+     * Method of obtaining token
      *
-     * @param string $shop 店铺的url
-     * @param array $value 需要传入的数据
-     * @return token 返回token或者 是 错误信息
+     * @param string $shop  Store url
+     * @param array $value  parameters
+     * @return array        token info 
      */
 
     private  function retrieveToken(string $shop,array $value):array
     {
         $shopUrl = 'https://'.$shop.$this->Endpoint["TokenURL"];
 
-
-
         return $this->GetAccessToken($shopUrl,$this->ClientID,$this->ClientSecret,$value);
     }
 
-    /**生成授权 code url
-     * @param string $shop 店铺的url
-     * @param array $value 店铺的url
-     * @return  string   返回url的拼接路径
+    /**Generate the authorization code URL
+     * @param string $shop Store url
+     * @param array $value parameters
+     * @return  string   Url of the authentication code
      */
     public  function AuthCodeUrl(string $shop, array $value,...$numbers)
     {
@@ -127,9 +126,9 @@ class Oauth2
         foreach ($numbers as $key => $val) {
             $value[$key] = $val;
         }
-        //拼接一个字符串
-        //  PHP_QUERY_RFC3986  ' ' 对应 %20
-        //  PHP_QUERY_RFC1738  ' ' 对应 +
+        
+        //  PHP_QUERY_RFC3986  ' ' : %20
+        //  PHP_QUERY_RFC1738  ' ' : +
         return $authUrl."?".http_build_query($value,"","&",PHP_QUERY_RFC1738);
     }
 
@@ -158,14 +157,14 @@ class Oauth2
         return  false;
     }
 
-    //获取token
-    /** 获取token的方法
+    
+    /** Method of obtaining token
      *
-     * @param string $tokenURL 店铺的url
-     * @param string $clientID 用户id
+     * @param string $tokenURL 
+     * @param string $clientID 
      * @param string $clientSecret
      * @param array $urlValue
-     * @return array  返回对象本身
+     * @return array  
      */
     public  static function GetAccessToken(string $tokenURL,string $clientID,string $clientSecret, array $urlValue):array
     {
