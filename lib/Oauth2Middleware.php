@@ -8,6 +8,15 @@ require 'Oauth2.php';
 
 class Oauth2Middleware extends oauth2
 {
+    static public  $httpErrorCode = array(
+        200 => "HTTP/1.1 200 OK", 
+        400 => "HTTP/1.1 400 Bad Request", 
+        404 => "HTTP/1.1 404 Not Found", 
+    );
+    static public $ExpirationTime = 3*24*60*60;
+    static public $EndpointError = "OAuth endpoint is not a myshoplazza site.";
+
+
     public  $requestPath= "/oauth_sdk/app_uri"  ;
     public  $callbackPath ="/oauth_sdk/redirect_uri/";
 
@@ -34,119 +43,89 @@ class Oauth2Middleware extends oauth2
             $Endpoint);
     }
 
-    //request 处理函数
+    //OauthRequest 
     public  function OauthRequest(){
 
-        //获取查询参数
+        //Get the QUERY_STRING
         if (empty($_SERVER['QUERY_STRING'])) {
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(array(
-                "code"=>400,
-                "message"=>"OAuth endpoint is not a myshoplazza site.",
-            ));
-            exit();
+            
+            $this->exceptionInfo(400,self::$EndpointError);
         }
-        //查询参数转化为数组
+        //Query parameters are converted to arrays
         parse_str($_SERVER['QUERY_STRING'],$query_arr);
-        //验证 shop
+        //Verify the store
         if  ( $this->ValidShop($query_arr["shop"])) {
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(array(
-                "code"=>400,
-                "message"=>"OAuth endpoint is not a myshoplazza site.",
-            ));
-            exit();
+            
+            $this->exceptionInfo(400,self::$EndpointError);
+
         }
         $state = $this->GetRandomString(48);
         $values = array(
             "state"=>$state,
         );
         $values_str = http_build_query($values);
-        // state设置
-        setcookie('state-session', $values_str, time()+3*24*60*60);
-        var_dump('$this->AuthCodeUrl($query_arr["shop"],$values)：：：：：');
-        var_dump($this->AuthCodeUrl($query_arr["shop"],$values));
-        // 302 重定向到 /admin/oauth/authorize
-//        header('Location:'.$this->AuthCodeUrl($query_arr["shop"],$values),true,302);
+        // set state-session
+        setcookie('state-session', $values_str, time()+ self::$ExpirationTime);
+      
+        // 302 redirect /admin/oauth/authorize
+        // header('Location:'.$this->AuthCodeUrl($query_arr["shop"],$values),true,302);
         return $this->AuthCodeUrl($query_arr["shop"],$values);
     }
 
 
-    // callback 处理函数
+    // callback 
     public  function OauthCallback(){
 
-        //获取查询参数
+        //Get the QUERY_STRING
         if (empty($_SERVER['QUERY_STRING'])) {
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(array(
-                "code"=>400,
-                "message"=>"Invalid callback.",
-            ));
-            exit();
+           
+            $this->exceptionInfo(400,"Invalid callback.");
+
         }
-        //查询参数转化为数组
+        //Query parameters are converted to arrays
         parse_str($_SERVER['QUERY_STRING'],$query_arr);
-        //验证 shop
+        //Verify the store
         if  ( $this->ValidShop($query_arr["shop"])) {
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(array(
-                "code"=>400,
-                "message"=>"OAuth endpoint is not a myshoplazza site.",
-            ));
-            exit();
+      
+            $this->exceptionInfo(400,self::$EndpointError);
         }
 
-        // state校验
+        // Verify state-session
         $stateSession = $_COOKIE['state-session'];
 
         parse_str($stateSession, $state_arr);
 
-
-
         if (empty($state_arr['state'])){
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(array(
-                "code"=>400,
-                "message"=>"State does not exist in the session.",
-            ));
-            exit();
+            
+            $this->exceptionInfo(400,"State does not exist in the session.");
+
         }
         if( strcasecmp($state_arr['state'],$query_arr['state'])){
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(array(
-                "code"=>400,
-                "message"=>"State does not match.",
-            ));
-            exit();
+           
+            $this->exceptionInfo(400,"State does not match.");
+
         }
-        // hmac校验
+        //Verify hmac
         if (($this->SignatureValid($query_arr['hmac']))){
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(array(
-                "code"=>400,
-                "message"=>"Signature does not match, it may have been tampered with.",
-            ));
-            exit();
+           
+            $this->exceptionInfo(400,"Signature does not match, it may have been tampered with.");
+
         }
 
-        // 用code换取token
+        // Exchange code for token
         $tokenO = $this->Exchange($query_arr["shop"],$query_arr["code"]);
         if (empty($tokenO)){
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(array(
-                "code"=>400,
-                "message"=>"failed to get the token ",
-            ));
-            exit();
+            
+            $this->exceptionInfo(400,"failed to get the token .");
+
         }
 
         $token_str = http_build_query($tokenO);
 
-        // 设置token
+        // set token
         setcookie("oauth2.token",$token_str);
 
 
-        //accessTokenHandlerFunc
 
         return array(
             "shop"=> $query_arr["shop"],
@@ -158,16 +137,14 @@ class Oauth2Middleware extends oauth2
 
 
 
-    // access-token 处理函数 可以重构
+    // Access-token handlers can be refactored
     public  function accessTokenHandlerFunc ( $shop , $token )
     {
-        //存放token,也可以存入存到db
+        //The token can also be stored in db
         $token["shop"] = $shop;
         $token_str = http_build_query($token);
 
-        setcookie("tokenAndShop",$token_str,time()+3*24*60*60,"/");
-
-        var_dump($_COOKIE);
+        setcookie("tokenAndShop",$token_str,time()+self::$ExpirationTime,"/");
 
         header('HTTP/1.1 200 OK',true,200);
         header("Status: 200 OK");
@@ -178,6 +155,7 @@ class Oauth2Middleware extends oauth2
             "message"=>"save access-token success",
         ));
         exit(200);
+
     }
 
     private  static function   GetRandomString(int $len = 48):string
@@ -191,11 +169,22 @@ class Oauth2Middleware extends oauth2
             "3", "4", "5", "6", "7", "8", "9"
         );
         $charsLen = count($chars) - 1;
-        shuffle($chars);    // 将数组打乱
+        shuffle($chars);    // Scramble arrays
         $output = "";
         for ($i = 0; $i < $len; $i++) {
             $output .= $chars[mt_rand(0, $charsLen)];
         }
         return $output;
+    }
+
+    public function  exceptionInfo($errorCode,$errorMsg) 
+    {
+        header(self::$httpErrorCode[$errorCode]);
+        echo json_encode(array(
+            "code"=>$errorCode,
+            "message"=>$errorMsg ,
+        ));
+        exit($errorCode);
+        
     }
 }

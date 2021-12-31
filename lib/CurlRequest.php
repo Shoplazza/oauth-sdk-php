@@ -9,7 +9,7 @@ namespace PHPShoplazza;
 
 
 require 'CurlResponse.php';
-require '../lib/Exception/CurlException.php';
+require 'lib/Exception/CurlException.php';
 
 
 use PHPShoplazza\Exception\CurlException;
