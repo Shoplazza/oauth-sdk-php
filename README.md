@@ -1,15 +1,15 @@
 [toc]
 
-# 项目介绍
+# Project introduction
 
 oauth2 package contains a client implementation for OAuth 2.0 spec.
 
 
-## 使用
+## USE
 
 ## GetAccessToken 
 ```injectablephp
-//测试 GetAccessToken 可以获取到数据
+//Test GetAccessToken to see if it can get data
 require 'lib/Oauth2.php';
 
 use PHPShoplazza\Oauth2;
@@ -30,7 +30,7 @@ var_dump($tokenObj);
 ## Exchange
 ```injectablephp
 
-//测试使用 Exchange 方法访问
+//Testing Exchange access
 require 'lib/Oauth2.php';
 use PHPShoplazza\Oauth2;
 
@@ -53,7 +53,7 @@ var_dump($res);
 ## RefreshToken
 
 ```injectablephp
-//测试使用 RefreshToken 方法访问
+//test RefreshToken 
 require 'lib/Oauth2.php';
 
 use PHPShoplazza\Oauth2;
@@ -77,7 +77,7 @@ var_dump($res);
 
 ## AuthCodeUrl
 ```injectablephp
-//测试使用 AuthCodeUrl 方法生成url
+//The test generates the URL using the AuthCodeUrl method
 require 'lib/Oauth2.php';
 
 use PHPShoplazza\Oauth2;
@@ -106,13 +106,13 @@ require 'lib/Oauth2Middleware.php';
 use PHPShoplazza\Oauth2Middleware;
 
 $middleware = new Oauth2Middleware(
-    //设置clientID
+    //set clientID
     "beECXaQzYZOvr5DgrSw3ntX4lfZOfoJwDtFMX2N0UOc",
-    //设置$ClientSecret
+    //set $ClientSecret
     "Y9Mo9s4fzRxo23dvzFO8h1v5FX5pp3xYKAqGicDuG70",
-        //指定可选的请求权限。
+    //Specify optional request permissions.
     array("read_product", "write_product"),
-    //指定回调地址的连接
+    //set callback address
     "https://2fec-43-230-206-233.ngrok.io/oauth_sdk/redirect_uri/",
     array(
         "AuthURL" => "/admin/oauth/authorize",
@@ -121,24 +121,24 @@ $middleware = new Oauth2Middleware(
     "/oauth_sdk/redirect_uri/"
 );
 
-//调用OauthRequest方法
+//Call the OauthRequest method
 $middleware->OauthRequest();
-//调用OauthCallback方法
+//Call the OauthCallback method
 $middleware->OauthCallback();
 
 ```
 
 ## In Laravel
 
-[Laravel官方网站](https://laravel.com/) 
+[Laravel website](https://laravel.com/) 
 
-目录下example-app 是一个Laravel 项目并且已经设置了全局的 middleware 会默认拦截 `/auth/shoplazza` 以及 `/auth/shoplazza/callback` 两个 URL 的请求:
-- `/auth/shoplazza?shop=xx.myshoplaza.com` : 请求此 URL 时，会重定向到 https://xx.myshoplaza.com/admin/oauth/authorize 去发起授权流程
-- `/auth/shoplazza/callback` : 拦截授权回调请求，自动将回调请求中的 code 替换 token
+Example-app is a Laravel project and middleware is set globally to block requests for urls' /auth/shoplazza 'and' /auth/shoplazza/callback 'by default:
+- `/auth/shoplazza?shop=xx.myshoplaza.com` : Asked this URL will be redirected to the https://xx.myshoplaza.com/admin/oauth/authorize to initiate the authorization process
+- `/auth/shoplazza/callback` : Intercepts authorization callback requests and automatically replaces tokens with codes in callback requests
 
-关于
 
-### 目录结构
+
+### The directory structure
 ```shell
 .
 ├── Readme.md
@@ -147,40 +147,39 @@ $middleware->OauthCallback();
 │   ├── app
 │   │   └── Http
 │   │        └── Middleware
-│   │               └── OauthDemo.php   //认证所需要的中间件
+│   │               └── OauthDemo.php   //Middleware required for authentication
 │   ├── artisan
 │   ├── bootstrap
 │   ├── composer.json
 │   ├── composer.lock
 │   ├── config
-│   │   └── oauth.php       //oauth 所需要的配置文件
+│   │   └── oauth.php       //Oauth configuration file required
 │   ├── database
-│   ├── docker-compose.yml  //docker-compose的配置文件
-│   ├── lib                 //库文件
+│   ├── docker-compose.yml  //Docker-compose configuration file
+│   ├── lib                 //library files
 │   ├── package.json    
 │   ├── phpunit.xml
 │   ├── public
 │   ├── resources
-│   ├── routes              //路由文件
-│   │   └── web.php         //测试程序所在文件
+│   ├── routes              //The routing file
+│   │   └── web.php         //Test the file where the program resides
 │   ├── server.php
 │   ├── storage
 │   ├── tests
 │   ├── vendor
 │   └── webpack.mix.js
 └── lib
-    ├── CurlRequest.php           //Curl 发送请求封装请求包
-    ├── CurlResponse.php          //Curl 响应请求封装返回包
-    ├── Exception                 // 意外情况返回
-    ├── HttpRequestJson.php       // http 请求的包
-    ├── Oauth2.php                // oauth2 的封装
-    └── Oauth2Middleware.php      // oauth2 的功能中间件
+    ├── CurlRequest.php           //Curl Sends a request to encapsulate a request package
+    ├── CurlResponse.php          //Curl Responds to the request by encapsulating the returned package
+    ├── Exception                 //
+    ├── HttpRequestJson.php       // HTTP request package
+    ├── Oauth2.php                // Oauth2 encapsulation
+    └── Oauth2Middleware.php      // Functional middleware for Oauth2
                 
 
 
 ```
-
-### [配置文件](./example-app/config/oauth.php)
+### [The configuration file](./example-app/config/oauth.php)
 ```injectablephp
 <?php
 return[
@@ -188,24 +187,24 @@ return[
     'clientID' => "beECXaQzYZOvr5DgrSw3ntX4lfZOfoJwDtFMX2N0UOc",
     //clientSecret
     'clientSecret'=>"Y9Mo9s4fzRxo23dvzFO8h1v5FX5pp3xYKAqGicDuG70",
-    //指定回调地址的链接
+    //callback address
     'redirectURL'=>"https://e820-43-230-206-233.ngrok.io/oauth_sdk/redirect_uri/",
-    //需要申请的权限
+    //Permission to apply for
     'Scopes' => [
         "read_product", "write_product","read_shop","write_shop"
     ],
-    //授权端点
+    //Authorize the endpoint
     'Endpoint'=>[
         "AuthURL"=>"/admin/oauth/authorize",
         "TokenURL"=>"/admin/oauth/token",
     ],
-    // 店铺域名，不设置的话默认使用美服域名：myshoplaza.com
+    // Shop domain name, if not set, the default domain name is myshoplaza.com
     "doMain" => "preview.shoplazza.com",
-    //request方法拦截的路径 
+    // The path intercepted by the request method
     "requestPath"=>"oauth_sdk/app_uri",
-    //callback方法拦截的路径 
+    // The path intercepted by the callback method
     "callbackPath"=>"oauth_sdk/redirect_uri",
-    //是否重构方法  (可选)
+    // Refactoring method or not (optional)
     "funcRewrite" => true,
 
 ];
@@ -213,7 +212,7 @@ return[
 
 
 ```
-### [中间件](./example-app/app/Http/Middleware/OauthDemo.php)
+### [The middleware](./example-app/app/Http/Middleware/OauthDemo.php)
 ```injectablephp
 <?php
 
@@ -229,7 +228,7 @@ use PHPShoplazza\Oauth2Middleware as OM;
 
 class OauthDemo
 {
-    /** 判断调用相关方法
+    /** Determine the method to call
      *
      *
      * @param Request $request
@@ -252,11 +251,7 @@ class OauthDemo
             case  $middleware->callbackPath :
                 $tmp =$middleware->OauthCallback();
 
-
-
                 if  (config('oauth.funcRewrite')) {
-
-                    //进入下一步
                     $middleware->accessTokenHandlerFunc($tmp['shop'],$tmp['token']);
                     return $next($request);
                 }else{
@@ -270,7 +265,7 @@ class OauthDemo
 }
 ```
 
-### [中间件的注册](./example-app/app/Http/Kernel.php)
+### [Middleware registration](./example-app/app/Http/Kernel.php)
 
 
 ```injectablephp
@@ -297,7 +292,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        //注册全局中间件
+        // Register global middleware
         \App\Http\Middleware\OauthDemo::class,
     ];
 
@@ -305,7 +300,7 @@ class Kernel extends HttpKernel
 }
 ```
 
-### [测试程序](./example-app/routes/web.php)
+### [The test program](./example-app/routes/web.php)
 
 ```injectablephp
 Route::get('/openapi_test', function () {
@@ -348,7 +343,7 @@ services:
         image: sail-8.1/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
-#            web服务的端口映射
+        #Port mapping for web services
         ports:
             - '${APP_PORT:-80}:80'
         environment:
@@ -367,7 +362,7 @@ services:
             - selenium
     mysql:
         image: 'mysql/mysql-server:8.0'
-#        数据库的端口映射
+        #Port mapping of the database
         ports:
             - '${FORWARD_DB_PORT:-3307}:3306'
         environment:
@@ -387,7 +382,7 @@ services:
             timeout: 5s
     redis:
         image: 'redis:alpine'
-#        缓存的端口映射
+        #Port mapping of the redis
         ports:
             - '${FORWARD_REDIS_PORT:-6379}:6379'
         volumes:
@@ -438,15 +433,13 @@ volumes:
 ```
 
 
-### 启动
+### Start
 
-#### 前置条件:
-需要安装docker以及docker-compose
-
+#### Precondition:
+Docker and Docker-compose will need to be installed
 ```shell
-cd example-app   进入demo项目
+cd example-app   Enter the Demo project
 
-./vendor/bin/sail up   启动环境并且运行项目
+./vendor/bin/sail up   Start the environment and run the project
 ```
-在您首次运行 Sail 的 up 命令的时候，Sail 的应用容器将会在您的机器上进行编译。这个过程将会花费一段时间。不要担心，以后就会很快了。
-
+The first time you run Sail's up command, the Sail application container will be compiled on your machine. This process will take a while. Don't worry, it will be soon.
