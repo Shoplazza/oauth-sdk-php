@@ -12,7 +12,7 @@ use PHPShoplazza\Oauth2Middleware as OM;
 
 class OauthDemo
 {
-    /** 判断调用相关方法
+    /** Middleware processing methods
      *
      *
      * @param Request $request
@@ -39,7 +39,7 @@ class OauthDemo
 
                 if  (config('oauth.funcRewrite')) {
 
-                    //进入下一步
+                    //next
                     $middleware->accessTokenHandlerFunc($tmp['shop'],$tmp['token']);
                     return $next($request);
                 }else{
