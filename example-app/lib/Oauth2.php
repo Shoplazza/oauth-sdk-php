@@ -49,7 +49,7 @@ class Oauth2
      * @param string $shop   Store url
      * @param string $code
      * @param mixed ...$numbers
-     * @return array   
+     * @return array
      */
     public  function Exchange(string $shop, string $code,...$numbers):array
     {
@@ -74,7 +74,7 @@ class Oauth2
     * @param string $shop   Store url
     * @param string $token  Overdue token
     * @param mixed ...$numbers
-    * @return token 
+    * @return token
     */
     public  function RefreshToken(string $shop, string $token,...$numbers):array
     {
@@ -96,7 +96,7 @@ class Oauth2
      *
      * @param string $shop  Store url
      * @param array $value  parameters
-     * @return array        token info 
+     * @return array        token info
      */
 
     private  function retrieveToken(string $shop,array $value):array
@@ -126,7 +126,7 @@ class Oauth2
         foreach ($numbers as $key => $val) {
             $value[$key] = $val;
         }
-        
+
         //  PHP_QUERY_RFC3986  ' ' : %20
         //  PHP_QUERY_RFC1738  ' ' : +
         return $authUrl."?".http_build_query($value,"","&",PHP_QUERY_RFC1738);
@@ -137,7 +137,7 @@ class Oauth2
         if (!empty($domain)){
             $domain = DefaultDomain;
         }
-        if (preg_match("/^[a-zA-Z0-9-]+.".$domain."$/", $stop)){
+        if (!preg_match("/^[a-zA-Z0-9-]+.".$domain."$/", $stop)){
             return true;
         }
 
@@ -157,14 +157,14 @@ class Oauth2
         return  false;
     }
 
-    
+
     /** Method of obtaining token
      *
-     * @param string $tokenURL 
-     * @param string $clientID 
+     * @param string $tokenURL
+     * @param string $clientID
      * @param string $clientSecret
      * @param array $urlValue
-     * @return array  
+     * @return array
      */
     public  static function GetAccessToken(string $tokenURL,string $clientID,string $clientSecret, array $urlValue):array
     {

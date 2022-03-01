@@ -137,7 +137,7 @@ class Oauth2
         if (!empty($domain)){
             $domain = DefaultDomain;
         }
-        if (preg_match("/^[a-zA-Z0-9-]+.".$domain."$/", $stop)){
+        if (!preg_match("/^[a-zA-Z0-9-]+.".$domain."$/", $stop)){
             return true;
         }
 
