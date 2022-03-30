@@ -1,20 +1,20 @@
 <!-- vscode-markdown-toc -->
-* 1. [Introduce](#Introduce)
-* 2. [Quick start](#Quickstart)
-	* 2.1. [Create app](#Createapp)
-	* 2.2. [Configure the app](#Configuretheapp)
-	* 2.3. [Modifying THE SDK Configuration](#ModifyingTHESDKConfiguration)
-	* 2.4. [Start the program](#Starttheprogram)
+* 1. [介绍](#)
+* 2. [快速启动](#-1)
+	* 2.1. [创建app](#app)
+	* 2.2. [配置app](#app-1)
+	* 2.3. [修改sdk配置](#sdk)
+	* 2.4. [启动程序](#-1)
 		* 2.4.1. [docker-compose](#docker-compose)
-		* 2.4.2. [The Laravel script starts](#TheLaravelscriptstarts)
-	* 2.5. [validation](#validation)
-* 3. [The directory structure](#Thedirectorystructure)
-* 4. [About Demo](#AboutDemo)
-	* 4.1. [Middleware for Demo](#MiddlewareforDemo)
-		* 4.1.1. [Implementation of Middleware](#ImplementationofMiddleware)
-		* 4.1.2. [ Middleware registration](#Middlewareregistration)
-	* 4.2. [About the Test Procedure](#AbouttheTestProcedure)
-* 5. [About the use of functional functions](#Abouttheuseoffunctionalfunctions)
+		* 2.4.2. [Laravel 脚本启动](#Laravel)
+	* 2.5. [验证](#-1)
+* 3. [目录结构](#-1)
+* 4. [关于Demo](#Demo)
+	* 4.1. [关于demo的中间件](#demo)
+		* 4.1.1. [中间件的实现](#-1)
+		* 4.1.2. [ 中间件的注册](#-1)
+	* 4.2. [关于测试程序](#-1)
+* 5. [关于功能函数的使用](#-1)
 	* 5.1. [GetAccessToken](#GetAccessToken)
 	* 5.2. [Exchange](#Exchange)
 	* 5.3. [RefreshToken](#RefreshToken)
@@ -26,74 +26,72 @@
 	autoSave=true
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
-[中文版](./README-ch.md)
 
-##  1. <a name='Introduce'></a>Introduce
+<!-- [toc] -->
+[English version](./README.md)
+##  1. <a name=''></a>介绍
 
-This project is a PHP SDK for Shoplazza developers to complete authentication without having to understand too much Oauth2 process.
-Read the documentation for the Shoplazza certification process [Standard OAuth process](https://helpcenter.shoplazza.com/hc/zh-cn/articles/4408686586137#h_01FM4XX2CX746V3277HB7SPGTN)
+本项目是为了shoplazza的开发者可以不需要理解过多的Oauth2流程完成认证操作的一款php语言开发的sdk。
+
+关于shoplazza认证流程请阅读文档 [标准的OAuth流程](https://helpcenter.shoplazza.com/hc/zh-cn/articles/4408686586137#h_01FM4XX2CX746V3277HB7SPGTN)
 
 
-##  2. <a name='Quickstart'></a>Quick start
-###  2.1. <a name='Createapp'></a>Create app
-Read the documentation for creating the app [Building Public App](https://helpcenter.shoplazza.com/hc/en-us/articles/4409360434201-Building-Public-App)
+##  2. <a name='-1'></a>快速启动
+###  2.1. <a name='app'></a>创建app
+关于创建app 请阅读文档 [构建公用App](https://helpcenter.shoplazza.com/hc/zh-cn/articles/4409360434201)
 
-###  2.2. <a name='Configuretheapp'></a>Configure the app
-Read the documentation for configuring the app [Manage Your App](https://helpcenter.shoplazza.com/hc/en-us/articles/4409476265241-Manage-Your-App)
+###  2.2. <a name='app-1'></a>配置app
+关于配置app 请阅读文档 [管理你的App](https://helpcenter.shoplazza.com/hc/zh-cn/articles/4409476265241)
 
-###  2.3. <a name='ModifyingTHESDKConfiguration'></a>Modifying THE SDK Configuration
+###  2.3. <a name='sdk'></a>修改sdk配置
 
-The parameters mentioned in the "Building Public App" and "Managing Your App" articles are:    
-1、Client ID： Authentication
-2、Client Secret：Authentication
-3、App URL：Your app main entrance URL
-4、Redirect：URL Your app's redirect URL, generally used to receive OAuth responses
+在《构建公用App》与《管理你的App》两个文章当中提到了几个参数分别是：    
+1、Client ID用于验证身份。
+2、Client Secret用于验证身份。
+3、App URL	你的App主服务地址。
+4、Redirect URL 你的App重定向地址，通常是由店铺重定向到你的App时的地址。
 
-The preceding four parameters need to be set in the demo configuration file
-[The configuration file](./example-app/config/oauth.php)
+上面的四个参数需要配置到demo的配置文件当中
+[配置文件](./example-app/config/oauth.php)
 
 ``` injectablephp
 <?php
 return[
-    //clientID
+    //ID用于验证身份。
     'clientID' => "beECXaQzYZOvr5DgrSw3ntX4lfZOfoJwDtFMX2N0UOc",
-    //clientSecret
+    //ID用于验证身份。
     'clientSecret'=>"Y9Mo9s4fzRxo23dvzFO8h1v5FX5pp3xYKAqGicDuG70",
-    //callback address
-    'redirectURL'=>"https://e820-43-230-206-233.ngrok.io/oauth_sdk/redirect_uri/",
-    //Permission to apply for
+    //你的App重定向地址，通常是由店铺重定向到你的App时的地址。
+    'redirectURL'=>"https://17d3-43-230-206-233.ngrok.io/oauth_sdk/redirect_uri/",
     'Scopes' => [
         "read_product", "write_product","read_shop","write_shop"
     ],
-    //Authorize the endpoint
     'Endpoint'=>[
         "AuthURL"=>"/admin/oauth/authorize",
         "TokenURL"=>"/admin/oauth/token",
     ],
-    // Shop domain name, if not set, the default domain name is myshoplaza.com
-    "doMain" => "preview.shoplazza.com",
-    // The path intercepted by the request method
+    "doMain" => "myshoplaza.com",
+    //App URL 的请求路径
     "requestPath"=>"oauth_sdk/app_uri",
-    // The path intercepted by the callback method
+    //redirectURL 请求路径
     "callbackPath"=>"oauth_sdk/redirect_uri",
-    // Refactoring method or not (optional)
+    //是否重构
     "funcRewrite" => true,
 
 ];
-
 ```
 
 
-###  2.4. <a name='Starttheprogram'></a>Start the program
-In the program of Demo, there are two startup modes, which are actually dependent on docker-compose. If there is no local mirror, it is necessary to pull the mirror.
+###  2.4. <a name='-1'></a>启动程序
+在demo的程序当中有两种启动方式，实际上都是依靠了docker-compose，如果在本地没有对应镜像的情况下，就需要进行镜像的拉取。
 
-Docker-compose's default mirror source is an international source. If the network connection is slow or abnormal, it is recommended to change the domestic source for docker-compose. Search for the replacement mode by yourself.
+docker-compose默认的镜像源是国际源，如果在拉取的时候网络连接缓慢或者异常，建议更换国内源进行拉取。更换方式请自行搜索。
 
 ####  2.4.1. <a name='docker-compose'></a>docker-compose
 [docker-compose.yml](/example-app/docker-compose.yml)
-
-If you are familiar with Docker, you can configure this file directly
+如果熟悉docker，可以直接配置该文件
 ```
+# For more information: https://laravel.com/docs/sail
 version: '3'
 services:
     laravel.test:
@@ -106,7 +104,7 @@ services:
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
-            # Application port  host:container
+            # 应用端口 宿主机:容器内
             - '${APP_PORT:-80}:80'
         environment:
             WWWUSER: '${WWWUSER}'
@@ -125,7 +123,7 @@ services:
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
-        #   Database port   host:container 
+        #   数据库端口  宿主机:容器内 
             - '${FORWARD_DB_PORT:-3307}:3306'
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
@@ -145,7 +143,7 @@ services:
     redis:
         image: 'redis:alpine'
         ports:
-        #   redis port  host:container  
+        #   redis端口  宿主机:容器内 
             - '${FORWARD_REDIS_PORT:-6379}:6379'
         volumes:
             - 'sailredis:/data'
@@ -193,46 +191,46 @@ volumes:
         driver: local
 
 ```
-docker-compose Start the command
-[Docker-compose official documentation](https://docs.docker.com/compose/reference/)
+docker-compose启动命令
+[docker-compose官方文档](https://docs.docker.com/compose/reference/)
 
 ```
-#Enter the Demo project
+#进入demo项目
 cd example-app  
 
-#The front desk to start the
+#前台启动
 docker-compose up
 
-#The background to start
+#后台启动
 docker-compose up -d
 
 
-#Checking startup Status
+#检查启动状态
 docker-compose ps
 
-#see the log
+#查看日志
 docker-compose logs -f
 
 
-#close
+#关闭
 docker-compose down
 
 
 ```
 
-####  2.4.2. <a name='TheLaravelscriptstarts'></a>The Laravel script starts
+####  2.4.2. <a name='Laravel'></a>Laravel 脚本启动
 
-[The script file](./example-app/vendor/bin/sail)
+[脚本文件](./example-app/vendor/bin/sail)
 
 ```
 ··· 
-#Configuration from line 31
+#31行起的配置
 # Define environment variables...
-#app port
+#app的端口
 export APP_PORT=${APP_PORT:-80}
-#app host
+#app的服务地址
 export APP_SERVICE=${APP_SERVICE:-"laravel.test"}
-#database port
+#数据库的端口
 export DB_PORT=${DB_PORT:-3306}
 export WWWUSER=${WWWUSER:-$UID}
 export WWWGROUP=${WWWGROUP:-$(id -g)}
@@ -245,40 +243,38 @@ export SAIL_SHARE_SUBDOMAIN=${SAIL_SHARE_SUBDOMAIN:-""}
 
 ```
 
-Script Start command
-
-[sail doc](https://laravel.com/docs/sail)
+脚本启动命令
+[sail介绍文档](https://learnku.com/docs/laravel/8.x/sail/9789#installing-sail-into-existing-applications)
 ```
-#Enter the Demo project
+#进入demo项目
 cd example-app  
 
-#Configure the environment and run the project
+#配置环境并运行项目
 ./vendor/bin/sail up
-#The background configures the environment and runs the project
+#配置环境并运行项目 后台
 ./vendor/bin/sail up -d
 ```
 
 
 
-###  2.5. <a name='validation'></a>validation
-At this point, you should have started the demo, so verify
-
-1、Verify that the demo program is running properly
+###  2.5. <a name='-1'></a>验证
+此时应该已经完成了demo的启动，那么接下来进行验证
+1、确定程序demo程序正常运行
 ```
-# Input in browser (default port 80)
+#浏览器当中输入(默认80端口)
 127.0.0.1/hello
-#Page response
+#页面会返回
 hello worldpanda
 ```
 
-2、Ensure that the installation process is smooth
-Please read this step first [Testing public app](https://helpcenter.shoplazza.com/hc/en-us/articles/4409360434201-Building-Public-App#h_01FM7GXEAM5VPXTK6PJSA9MFWC)
+2、确定安装流程顺畅
+这个步骤请先阅读 [测试公共App](https://helpcenter.shoplazza.com/hc/zh-cn/articles/4409360434201#h_01FM7BPX2QBPB9ZWQZM80GTH4C)
 
-Installation process:
+按照流程：
 
-If you have development store, go to  [Partner Center](https://partners.shoplazza.com/)->Apps->Apps List->Manage Apps->Test Apps  with the above Shoplazza account, select store to install the app and jump to the authorized installation page of the store for testing.
+前往 [合作伙伴中心](https://partners.shoplazza.com/)->App->App列表->管理App->测试App 入口，选择该店铺安装App，即可跳转至该店铺的授权安装页面.
 
-The page responds to the normal authorization result
+正常授权结果后页面会返回
 ```
 {
     "code":200,
@@ -286,19 +282,18 @@ The page responds to the normal authorization result
 }
 ```
 
-3、Authentication token
+3、验证token
 
 ```
-# Input in browser (default port 80)
-https://host/openapi_test
-#The page responds to the store default information
+#浏览器当中输入(默认80端口)
+https域名/openapi_test
+#页面会返回店铺默认信息
 ```
 
 
 
 
-##  3. <a name='Thedirectorystructure'></a>The directory structure
-
+##  3. <a name='-1'></a>目录结构
 ```shell
 .
 ├── Readme.md
@@ -307,55 +302,56 @@ https://host/openapi_test
 │   ├── app
 │   │   └── Http
 │   │        └── Middleware
-│   │               └── OauthDemo.php   //Middleware required for authentication
+│   │               └── OauthDemo.php   //认证中间件的demo
 │   ├── artisan
 │   ├── bootstrap
 │   ├── composer.json
 │   ├── composer.lock
 │   ├── config
-│   │   └── oauth.php       //Oauth configuration file required
+│   │   └── oauth.php       //Oauth中间件的配置文件
 │   ├── database
-│   ├── docker-compose.yml  //Docker-compose configuration file
-│   ├── lib                 //library files
+│   ├── docker-compose.yml  //Docker-compose配置文件
+│   ├── lib                 //库文件
 │   ├── package.json    
 │   ├── phpunit.xml
 │   ├── public
 │   ├── resources
-│   ├── routes              //The routing file
-│   │   └── web.php         //Test the file where the program resides
+│   ├── routes              //路由文件 
+│   │   └── web.php         //测试程序所在的文件
 │   ├── server.php
 │   ├── storage
 │   ├── tests
 │   ├── vendor
 │   └── webpack.mix.js
 └── lib
-    ├── CurlRequest.php           //Curl Sends a request to encapsulate a request package
-    ├── CurlResponse.php          //Curl Responds to the request by encapsulating the returned package
-    ├── Exception                 //
-    ├── HttpRequestJson.php       // HTTP request package
-    ├── Oauth2.php                // Oauth2 encapsulation
-    └── Oauth2Middleware.php      // Functional middleware for Oauth2
-
+    ├── CurlRequest.php           //Curl发送一个封装请求包的请求
+    ├── CurlResponse.php          //Curl通过封装返回的包来响应请求
+    ├── Exception                 
+    ├── HttpRequestJson.php       // HTTP请求包
+    ├── Oauth2.php                // Oauth2 封装
+    └── Oauth2Middleware.php      // Oauth2的功能中间件
+                
 ```
 
 
 
 
-##  4. <a name='AboutDemo'></a>About Demo
+##  4. <a name='Demo'></a>关于Demo
 
-The main purpose of Demo is to provide some convenience for developers to use and understand how to use it.
+Demo的主要目的是为了为开发者提供一些使用上的便捷，以及方便理解使用方法。
 
-Example-app is a [Laravel](https://laravel.com/) framework implementation of phpwebDemo.
+Demo是项目目录下example-app是一个[Laravel](https://laravel.com/) 框架实现的phpwebDemo。
 
-The Demo has set up global middleware to block requests for `/auth/shoplazza` and `/auth/shoplazza/callback` by default:
-- `/auth/shoplazza?shop=xx.myshoplaza.com` : Asked this URL will be redirected to the https://xx.myshoplaza.com/admin/oauth/authorize to initiate the authorization process
-- `/auth/shoplazza/callback` : Intercepts authorization callback requests and automatically replaces tokens with codes in callback requests
-###  4.1. <a name='MiddlewareforDemo'></a>Middleware for Demo
+Demo已经设置了全局的 middleware 会默认拦截 `/auth/shoplazza` 以及 `/auth/shoplazza/callback` 两个 URL 的请求:
+- `/auth/shoplazza?shop=xx.myshoplaza.com` : 请求此 URL 时，会重定向到 https://xx.myshoplaza.com/admin/oauth/authorize 去发起授权流程
+- `/auth/shoplazza/callback` : 拦截授权回调请求，自动将回调请求中的 code 替换 token
+
+###  4.1. <a name='demo'></a>关于demo的中间件
 
 
-####  4.1.1. <a name='ImplementationofMiddleware'></a>Implementation of Middleware
+####  4.1.1. <a name='-1'></a>中间件的实现
 
-[Middleware](./example-app/app/Http/Middleware/OauthDemo.php)
+[中间件代码](./example-app/app/Http/Middleware/OauthDemo.php)
 
 ```injectablephp
 <?php
@@ -372,7 +368,7 @@ use PHPShoplazza\Oauth2Middleware as OM;
 
 class OauthDemo
 {
-    /** Determine the method to call
+    /** 判断调用相关方法
      *
      *
      * @param Request $request
@@ -393,26 +389,36 @@ class OauthDemo
         );
         switch ($request->path()){
             case  $middleware->callbackPath :
+                var_dump($request->path());
                 $tmp =$middleware->OauthCallback();
+                var_dump("打印状态");
+
+                var_dump(config('oauth.funcRewrite'));
+
 
                 if  (config('oauth.funcRewrite')) {
+                    var_dump("accessTokenHandlerFunc");
+
+                    //进入下一步
                     $middleware->accessTokenHandlerFunc($tmp['shop'],$tmp['token']);
                     return $next($request);
                 }else{
+                    var_dump("走了");
+
                     return $next($request);
                 }
             case  $middleware->requestPath :
+                var_dump($request->path());
                 return redirect()->away($middleware->OauthRequest());
         }
         return $next($request);
     }
 }
-
 ```
 
-####  4.1.2. <a name='Middlewareregistration'></a> Middleware registration
+####  4.1.2. <a name='-1'></a> 中间件的注册
 
-[Middleware registration config](./example-app/app/Http/Kernel.php)
+[中间件注册配置](./example-app/app/Http/Kernel.php)
 
 
 ```injectablephp
@@ -439,28 +445,27 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        // Register global middleware
+        //注册全局中间件
         \App\Http\Middleware\OauthDemo::class,
     ];
 
  ...
 }
-
 ```
 
-###  4.2. <a name='AbouttheTestProcedure'></a>About the Test Procedure
+###  4.2. <a name='-1'></a>关于测试程序
 
-[The test program](./example-app/routes/web.php)
+[测试程序](./example-app/routes/web.php)
 
 ```injectablephp
 Route::get('/openapi_test', function () {
-    // tokenAndShop cookies are generated when the installation is complete
+    //在完成安装的时候会产生tokenAndShop的 cookie
     $tokenAndStop= $_COOKIE["tokenAndShop"];
     parse_str($tokenAndStop, $tokenAndStop_arr);
 
     $http = new Client;
 
-    // Rely on cookies to request store information for testing effect
+    //依靠cookie来进行 请求获取店铺信息 ，以达到测试的效果
     $headers = [
         'Accept'=>'application/json',
 
@@ -476,11 +481,11 @@ Route::get('/openapi_test', function () {
 ```
 
 
-##  5. <a name='Abouttheuseoffunctionalfunctions'></a>About the use of functional functions
+##  5. <a name='-1'></a>关于功能函数的使用
 
 ###  5.1. <a name='GetAccessToken'></a>GetAccessToken 
 ```injectablephp
-//Test GetAccessToken to see if it can get data
+//测试 GetAccessToken 可以获取到数据
 require 'lib/Oauth2.php';
 
 use PHPShoplazza\Oauth2;
@@ -497,11 +502,11 @@ $tokenArray = Oauth2::GetAccessToken(
 );
 var_dump($tokenObj);
 
-
 ```
 ###  5.2. <a name='Exchange'></a>Exchange
 ```injectablephp
-//Testing Exchange access
+
+//测试使用 Exchange 方法访问
 require 'lib/Oauth2.php';
 use PHPShoplazza\Oauth2;
 
@@ -519,13 +524,12 @@ $res =$oauthObj->Exchange(
 );
 
 var_dump($res);
-
 ```
 
 ###  5.3. <a name='RefreshToken'></a>RefreshToken
 
 ```injectablephp
-//test RefreshToken 
+//测试使用 RefreshToken 方法访问
 require 'lib/Oauth2.php';
 
 use PHPShoplazza\Oauth2;
@@ -549,7 +553,7 @@ var_dump($res);
 
 ###  5.4. <a name='AuthCodeUrl'></a>AuthCodeUrl
 ```injectablephp
-//The test generates the URL using the AuthCodeUrl method
+//测试使用 AuthCodeUrl 方法生成url
 require 'lib/Oauth2.php';
 
 use PHPShoplazza\Oauth2;
@@ -578,14 +582,14 @@ require 'lib/Oauth2Middleware.php';
 use PHPShoplazza\Oauth2Middleware;
 
 $middleware = new Oauth2Middleware(
-    //set clientID
+    //设置  ClientID
     "beECXaQzYZOvr5DgrSw3ntX4lfZOfoJwDtFMX2N0UOc",
-    //set $ClientSecret
+    //设置  ClientSecret
     "Y9Mo9s4fzRxo23dvzFO8h1v5FX5pp3xYKAqGicDuG70",
-    //Specify optional request permissions.
-    array("read_product", "write_product"),
-    //set callback address
+    //指定回调地址的连接
     "https://2fec-43-230-206-233.ngrok.io/oauth_sdk/redirect_uri/",
+    //指定可选的请求权限。
+    array("read_product", "write_product"),
     array(
         "AuthURL" => "/admin/oauth/authorize",
         "TokenURL" => "/admin/oauth/token",),
@@ -593,10 +597,9 @@ $middleware = new Oauth2Middleware(
     "/oauth_sdk/redirect_uri/"
 );
 
-//Call the OauthRequest method
+//调用OauthRequest方法
 $middleware->OauthRequest();
-//Call the OauthCallback method
+//调用OauthCallback方法
 $middleware->OauthCallback();
-
 
 ```
