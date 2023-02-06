@@ -88,9 +88,10 @@ return[
 In the program of Demo, there are two startup modes, which are actually dependent on docker-compose. If there is no local mirror, it is necessary to pull the mirror.
 
 Docker-compose's default mirror source is an international source. If the network connection is slow or abnormal, it is recommended to change the domestic source for docker-compose. Search for the replacement mode by yourself.
+> As the Ubuntu supported version used for DockerFile in Laravel/sail is TLS, please ensure that the Ubuntu supported version corresponds after replacing the mirror source.
 
 ####  2.4.1. <a name='docker-compose'></a>docker-compose
-[docker-compose.yml](/example-app/docker-compose.yml)
+[docker-compose.yml](./example-app/docker-compose.yml)
 
 If you are familiar with Docker, you can configure this file directly
 ```
@@ -98,6 +99,8 @@ version: '3'
 services:
     laravel.test:
         build:
+            # The Dockerfile image is Ubuntu:[version] TLS
+			# An image of Ubuntu pulled by the accelerator may not be the TLS version
             context: ./vendor/laravel/sail/runtimes/8.1
             dockerfile: Dockerfile
             args:
@@ -478,7 +481,7 @@ Route::get('/openapi_test', function () {
 
 ##  5. <a name='Abouttheuseoffunctionalfunctions'></a>About the use of functional functions
 
-###  5.1. <a name='GetAccessToken'></a>GetAccessToken 
+###  5.1. <a name='GetAccessToken'></a>GetAccessToken
 ```injectablephp
 //Test GetAccessToken to see if it can get data
 require 'lib/Oauth2.php';

@@ -86,9 +86,10 @@ return[
 在demo的程序当中有两种启动方式，实际上都是依靠了docker-compose，如果在本地没有对应镜像的情况下，就需要进行镜像的拉取。
 
 docker-compose默认的镜像源是国际源，如果在拉取的时候网络连接缓慢或者异常，建议更换国内源进行拉取。更换方式请自行搜索。
+> 由于Laravel/sail中DockerCompose所使用的Ubuntu支持版本为TLS，请在切还镜像源后保证Ubuntu支持版本对应。
 
 ####  2.4.1. <a name='docker-compose'></a>docker-compose
-[docker-compose.yml](/example-app/docker-compose.yml)
+[docker-compose.yml](./example-app/docker-compose.yml)
 如果熟悉docker，可以直接配置该文件
 ```
 # For more information: https://laravel.com/docs/sail
@@ -96,6 +97,8 @@ version: '3'
 services:
     laravel.test:
         build:
+            # Dockerfile 中依托镜像为 Ubuntu:[version] TLS
+            # 采用加速器拉取到的 Ubuntu 镜像可能并非 TLS 版本
             context: ./vendor/laravel/sail/runtimes/8.1
             dockerfile: Dockerfile
             args:
@@ -483,7 +486,7 @@ Route::get('/openapi_test', function () {
 
 ##  5. <a name='-1'></a>关于功能函数的使用
 
-###  5.1. <a name='GetAccessToken'></a>GetAccessToken 
+###  5.1. <a name='GetAccessToken'></a>GetAccessToken
 ```injectablephp
 //测试 GetAccessToken 可以获取到数据
 require 'lib/Oauth2.php';
